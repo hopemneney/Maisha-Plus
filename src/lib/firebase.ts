@@ -5,7 +5,7 @@ import { getAuth } from 'firebase/auth';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCLiYNpPils0qnBekuyVxSscbGwB0yjpw4",
-  authDomain: "maisha-plus-b95aa.firebaseapp.com",
+  authDomain: "maisha-plus-b95aa.web.app",
   projectId: "maisha-plus-b95aa",
   storageBucket: "maisha-plus-b95aa.firebasestorage.app",
   messagingSenderId: "910283416435",
