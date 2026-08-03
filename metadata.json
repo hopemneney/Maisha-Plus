@@ -1,0 +1,6 @@
+{
+  "name": "Maisha Plus",
+  "description": "A social group and community services platform offering a public website, user dashboard for applications, and an administrative panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

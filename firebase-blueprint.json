@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A member profile.",
+      "type": "object",
+      "properties": {
+        "firstName": { "type": "string", "maxLength": 100 },
+        "lastName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "avatarUrl": { "type": "string", "maxLength": 500 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "address": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["firstName", "lastName", "email", "role", "createdAt"]
+    },
+    "ServiceApplication": {
+      "title": "ServiceApplication",
+      "description": "Application for loan, grant or scholarship.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "serviceType": { "type": "string", "maxLength": 100 },
+        "requestedAmount": { "type": "number" },
+        "purpose": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["Pending", "Approved", "Rejected"] },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "serviceType", "requestedAmount", "purpose", "status", "createdAt", "updatedAt"]
+    },
+    "NewsItem": {
+      "title": "NewsItem",
+      "description": "Announcements and updates.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 5000 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "imageUrl": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["title", "content", "authorId", "createdAt"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Community projects.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["Ongoing", "Completed"] }
+      },
+      "required": ["title", "description", "imageUrl", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/applications/{appId}": {
+      "schema": { "$ref": "#/entities/ServiceApplication" },
+      "description": "Service applications"
+    },
+    "/news/{newsId}": {
+      "schema": { "$ref": "#/entities/NewsItem" },
+      "description": "Announcements"
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Community projects"
+    }
+  }
+}

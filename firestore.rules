@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
+    function isChairman() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'chairman'; }
+    function isStaff() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['accountant', 'secretary', 'chairman']; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['firstName', 'lastName', 'email', 'role', 'createdAt']) &&
+        data.firstName is string && data.firstName.size() <= 100 &&
+        data.lastName is string && data.lastName.size() <= 100 &&
+        data.email is string && data.email.size() <= 150 &&
+        data.role in ['user', 'admin', 'accountant', 'secretary', 'chairman'] &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 500)) &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 20)) &&
+        (!('address' in data) || (data.address is string && data.address.size() <= 500));
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUser(incoming()) && (incoming().role == 'user' || (incoming().role == 'admin' && incoming().email == 'admin@maishaplus.com'));
+      allow update: if isSignedIn() && isValidId(userId) && isValidUser(incoming()) && (
+        (request.auth.uid == userId && incoming().diff(existing()).affectedKeys().hasOnly(['phone', 'address', 'firstName', 'lastName', 'avatarUrl']) && incoming().role == existing().role) ||
+        (isAdmin() || isChairman())
+      );
+      allow delete: if isAdmin() || isChairman();
+    }
+
+    function isValidApplication(data) {
+      return data.keys().hasAll(['userId', 'serviceType', 'requestedAmount', 'purpose', 'status', 'createdAt', 'updatedAt']) &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.serviceType is string && data.serviceType.size() <= 100 &&
+        data.requestedAmount is number &&
+        data.purpose is string && data.purpose.size() <= 2000 &&
+        data.status in ['Pending', 'Pending Accountant', 'Pending Secretary', 'Pending Chairman', 'Approved', 'Rejected'] &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    match /applications/{appId} {
+      allow read: if isAdmin() || isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(appId) && isValidApplication(incoming()) && incoming().userId == request.auth.uid && (incoming().status == 'Pending' || incoming().status == 'Pending Accountant');
+      allow update: if isSignedIn() && isValidId(appId) && isValidApplication(incoming()) && incoming().userId == existing().userId && (
+        (isAdmin() || isStaff()) && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])
+      );
+    }
+
+    function isValidNewsItem(data) {
+      return data.keys().hasAll(['title', 'content', 'authorId', 'createdAt']) &&
+        data.title is string && data.title.size() <= 200 &&
+        data.content is string && data.content.size() <= 5000 &&
+        data.authorId is string && data.authorId.size() <= 128 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 500)) &&
+        (!('venue' in data) || (data.venue is string && data.venue.size() <= 200)) &&
+        (!('meetingDate' in data) || (data.meetingDate is string && data.meetingDate.size() <= 50)) &&
+        (!('meetingTime' in data) || (data.meetingTime is string && data.meetingTime.size() <= 50)) &&
+        (!('agenda' in data) || (data.agenda is string && data.agenda.size() <= 2000));
+    }
+
+    match /news/{newsId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isChairman()) && isValidId(newsId) && isValidNewsItem(incoming()) && incoming().authorId == request.auth.uid;
+      allow update: if (isAdmin() || isChairman()) && isValidId(newsId) && isValidNewsItem(incoming());
+      allow delete: if isAdmin() || isChairman();
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['title', 'description', 'imageUrl', 'status']) &&
+        data.title is string && data.title.size() <= 200 &&
+        data.description is string && data.description.size() <= 5000 &&
+        data.imageUrl is string && data.imageUrl.size() <= 500 &&
+        data.status in ['Ongoing', 'Completed'];
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(projectId) && isValidProject(incoming());
+      allow update: if isAdmin() && isValidId(projectId) && isValidProject(incoming());
+    }
+  }
+}
