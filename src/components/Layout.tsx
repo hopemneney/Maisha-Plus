@@ -42,10 +42,7 @@ export default function Layout() {
         <div className="px-6 lg:px-12">
           <div className="flex justify-between items-center py-6">
             <Link to="/" className="flex items-center gap-3">
-              <img src="/logo.png" alt="Maisha Plus Logo" className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0" />
-              <span className="font-serif italic text-xl md:text-2xl font-bold tracking-tighter">
-                Maisha Plus+
-              </span>
+              <img src="/logo.png" alt="Maisha Plus Logo" className="w-16 h-16 md:w-24 md:h-24 object-contain flex-shrink-0" />
             </Link>
             
             {/* Desktop Nav */}
