@@ -37,11 +37,14 @@ import ManageNews from './pages/dashboard/admin/ManageNews';
 // Staff Dashboard Pages
 import StaffDashboard from './pages/dashboard/staff/StaffDashboard';
 
+import { HelmetProvider } from 'react-helmet-async';
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+    <HelmetProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
           {/* Public Routes with Main Layout */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -98,7 +101,8 @@ export default function App() {
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }

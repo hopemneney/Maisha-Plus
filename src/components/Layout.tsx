@@ -6,6 +6,7 @@ import { Menu, X, User as UserIcon, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 
 export default function Layout() {
   const { user } = useAuth();
@@ -25,14 +26,23 @@ export default function Layout() {
     { name: 'Katiba', path: '/constitution' },
   ];
 
+  const getPageTitle = () => {
+    const currentLink = navLinks.find(link => link.path === location.pathname);
+    return currentLink ? `${currentLink.name} | Maisha Plus+` : 'Maisha Plus+';
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#FAF9F6] text-[#2D2A26]">
+      <Helmet>
+        <title>{getPageTitle()}</title>
+        <meta name="description" content="Maisha Plus+ Group - Community development and empowerment projects in Tanzania." />
+      </Helmet>
       {/* Top Bar */}
       <header className="sticky top-0 z-50 bg-[#FAF9F6] border-b border-[#2D2A26]/10">
         <div className="px-6 lg:px-12">
           <div className="flex justify-between items-center py-6">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-[#C25E30] rounded-full flex-shrink-0"></div>
+            <Link to="/" className="flex items-center gap-3">
+              <img src="/logo.png" alt="Maisha Plus Logo" className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0" />
               <span className="font-serif italic text-xl md:text-2xl font-bold tracking-tighter">
                 Maisha Plus+
               </span>
