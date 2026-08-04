@@ -19,8 +19,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fUser) => {
-      setFirebaseUser(fUser);
       if (fUser) {
+        if (!fUser.emailVerified) {
+          await signOut(auth);
+          setFirebaseUser(null);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        
+        setFirebaseUser(fUser);
         // Fetch custom user data from Firestore
         try {
           const userData = await dbApi.getUser(fUser.uid);

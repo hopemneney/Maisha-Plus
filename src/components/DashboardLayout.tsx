@@ -77,10 +77,9 @@ export default function DashboardLayout() {
       
       {/* Mobile Header */}
       <div className="md:hidden flex justify-between items-center p-6 border-b border-[#2D2A26]/10 bg-white z-20">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#C25E30] rounded-full"></div>
-          <span className="font-serif italic text-xl font-bold tracking-tighter">Maisha Plus+</span>
-        </div>
+        <Link to="/" className="flex items-center">
+          <img src="/logo.png" alt="Maisha Plus Logo" className="w-12 h-12 object-contain flex-shrink-0" />
+        </Link>
         <button onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -91,10 +90,9 @@ export default function DashboardLayout() {
         "w-full md:w-64 bg-[#F2F0EB] border-r border-[#2D2A26]/10 flex flex-col absolute md:relative z-10 h-[calc(100vh-81px)] md:h-screen transition-transform duration-300",
         sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}>
-        <div className="hidden md:flex p-8 border-b border-[#2D2A26]/10 items-center gap-2">
-          <div className="w-8 h-8 bg-[#C25E30] rounded-full"></div>
-          <Link to="/" className="font-serif italic text-2xl font-bold tracking-tighter hover:opacity-80">
-            Maisha Plus+
+        <div className="hidden md:flex p-8 border-b border-[#2D2A26]/10 items-center">
+          <Link to="/" className="flex items-center hover:opacity-80">
+            <img src="/logo.png" alt="Maisha Plus Logo" className="w-16 h-16 object-contain flex-shrink-0" />
           </Link>
         </div>
         

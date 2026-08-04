@@ -25,10 +25,13 @@ export default function Login() {
       if (!fUser.emailVerified) {
         try {
           await sendEmailVerification(fUser);
-          setMessage(`Notice: A verification email has been sent to ${fUser.email}. Please verify your email.`);
+          setError(`Please verify your email address to log in. A new verification link has been sent to ${fUser.email}.`);
         } catch (vErr) {
+          setError('Please verify your email address to log in.');
           console.warn("Could not resend email verification:", vErr);
         }
+        await auth.signOut();
+        return;
       }
 
       const user = await dbApi.getUser(fUser.uid);
@@ -77,10 +80,13 @@ export default function Login() {
       if (!fUser.emailVerified) {
         try {
           await sendEmailVerification(fUser);
-          setMessage(`A verification email has been sent to ${fUser.email}. Please check your inbox.`);
+          setError(`Please verify your email address to log in. A new verification link has been sent to ${fUser.email}.`);
         } catch (vErr) {
+          setError('Please verify your email address to log in.');
           console.warn("Email verification send note:", vErr);
         }
+        await auth.signOut();
+        return;
       }
 
       if (user) {

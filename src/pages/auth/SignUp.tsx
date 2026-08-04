@@ -37,11 +37,14 @@ export default function SignUp() {
       // Send email verification
       try {
         await sendEmailVerification(fUser);
+        setMessage(`Success! A verification link has been sent to ${fUser.email}. Please verify your email before logging in.`);
       } catch (vErr) {
         console.warn("Could not send verification email:", vErr);
       }
 
-      navigate('/dashboard');
+      await auth.signOut();
+      
+      // We don't navigate, we let them read the message
     } catch (err: any) {
       setError(err.message || 'Failed to create account.');
     } finally {
@@ -80,9 +83,12 @@ export default function SignUp() {
       if (!fUser.emailVerified) {
         try {
           await sendEmailVerification(fUser);
+          setMessage(`A verification email has been sent to ${fUser.email}. Please check your inbox and verify before logging in.`);
         } catch (vErr) {
           console.warn("Verification email notice:", vErr);
         }
+        await auth.signOut();
+        return;
       }
 
       if (user) {
