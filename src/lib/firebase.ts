@@ -4,12 +4,12 @@ import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCLiYNpPils0qnBekuyVxSscbGwB0yjpw4",
-  authDomain: "maishaplusgroup.netlify.app",
-  projectId: "maisha-plus-b95aa",
-  storageBucket: "maisha-plus-b95aa.firebasestorage.app",
-  messagingSenderId: "910283416435",
-  appId: "1:910283416435:web:6303fedeb70ee0fbd29b06"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
