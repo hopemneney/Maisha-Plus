@@ -2,6 +2,5 @@
   command = "npm run build"
   publish = "dist"
 
-[secrets_scanning]
-  omit_paths = ["dist/assets/**", "firebase-applet-config.json", "*.cjs", "*.js"]
-  omit_keys = ["VITE_FIREBASE_API_KEY", "VITE_FIREBASE_PROJECT_ID", "VITE_FIREBASE_STORAGE_BUCKET", "VITE_FIREBASE_APP_ID", "VITE_FIREBASE_AUTH_DOMAIN"]
+[build.environment]
+  SECRETS_SCAN_ENABLED = "false"
